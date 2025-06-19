@@ -1,44 +1,78 @@
 # Shell-Water-Quality-Prediction
 
-Developed by Prajan Kannan
+**Developed by Prajan Kannan**
 
-This project aims to predict multiple water quality parameters using machine learning techniques, specifically `MultiOutputRegressor` wrapped around a `RandomForestRegressor`.
+This project focuses on predicting and classifying water quality using machine learning techniques. It integrates environmental data analysis with a fully-fledged machine learning pipeline to compute and classify Water Quality Index (WQI) and its associated parameters.
 
 ## Introduction
 
-Access to clean water is a critical global concern. Accurate prediction of various water quality metrics can aid in the early detection of pollution and ensure timely intervention.
+Access to clean water is a vital global need. Predicting water quality metrics allows for early detection of contaminants and aids policymakers and researchers in proactive environmental management.
 
-## Procedure:
+## Project Workflow
 
-- Collected and preprocessed real-world water quality datasets  
-- Used supervised machine learning for **multi-target regression**  
-- Built a pipeline using **MultiOutputRegressor** with **RandomForestRegressor**  
-- Evaluated the model using appropriate regression metrics  
+- Uploaded real-world water quality datasets  
+- Performed a complete preprocessing and feature engineering pipeline  
+- Calculated WQI from raw parameters using standard limits and weightings  
+- Classified WQI into qualitative categories (WQC)  
+- Trained an XGBoost classifier with hyperparameter tuning  
+- Visualized predictions and interpreted feature impact using SHAP  
 
-## Tools Used:
+## Features and Updates
 
-- **Python 3.12**
-- **Pandas**, **NumPy** – Data handling  
-- **Scikit-learn** – Machine learning model and evaluation  
-- **Matplotlib**, **Seaborn** – Data visualization  
-- **Jupyter Notebook** – Interactive experimentation  
+### Data Handling and Upload
 
-## Quality Parameters
+- Upload the file "Water Quality Prediction Dataset.csv"
 
-The model predicts multiple water quality parameters, including:
+### Full Preprocessing Pipeline
+
+- Parsed dates and extracted `month` and `year`
+- Imputed missing values using `SimpleImputer`
+- Corrected skewed features using `np.log1p`
+- Scaled all features using `StandardScaler`
+
+### WQI Calculation and Classification
+
+- Computed Water Quality Index (WQI) using weighted parameter scores
+- Used parameter-specific standard (`S_i`) and ideal (`V_i`) limits
+- Classified WQI into five categories: Excellent, Good, Poor, Very Poor, Unsuitable
+
+### Label Encoding and Data Splitting
+
+- Encoded WQC string labels into integers using `LabelEncoder`
+- Applied stratified train-test split to preserve class proportions
+
+### Model Training
+
+- Used `XGBClassifier` with objective `'multi:softprob'`
+- Tuned hyperparameters using `GridSearchCV` with cross-validation
+
+### Evaluation and Visualization
+
+- Reported `accuracy score` and `classification report`
+- Visualized class-level performance using a `confusion matrix` (Seaborn heatmap)
+- Interpreted feature impact using SHAP with beeswarm plots for individual classes
+
+## Quality Parameters Predicted
+
+The model processes and predicts the following water quality indicators:
 
 - **NH₄** (Ammonium)  
 - **BOD₅** (BSK₅ – Biochemical Oxygen Demand)  
-- **Colloids**  
+- **Suspended Solids (Colloids)**  
 - **O₂** (Dissolved Oxygen)  
 - **NO₃**, **NO₂**, **SO₄**, **PO₄** (Nitrate, Nitrite, Sulfate, Phosphate)  
 - **CL** (Chloride)  
 
+## Tools and Libraries Used
+
+- **Python 3.12**  
+- **Pandas**, **NumPy** – Data manipulation  
+- **Scikit-learn** – Machine learning models and preprocessing  
+- **XGBoost** – Gradient boosting model  
+- **Matplotlib**, **Seaborn** – Visualization  
+- **SHAP** – Model explainability  
+- **Jupyter Notebook / Google Colab** – Execution environment
+
 ## Model Performance
 
-The model was evaluated using the following metrics:
-
-- **R² Score**
-- **Mean Squared Error (MSE)**
-
-Performance was **efficient and feasible across all parameters**, demonstrating the potential of machine learning in environmental monitoring.
+The model achieved strong classification accuracy across categories and demonstrated interpretability using SHAP. It is deployable for practical monitoring systems and scientific reporting.
