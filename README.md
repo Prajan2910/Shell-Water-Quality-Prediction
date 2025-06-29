@@ -2,77 +2,84 @@
 
 **Developed by Prajan Kannan**
 
-This project focuses on predicting and classifying water quality using machine learning techniques. It integrates environmental data analysis with a fully-fledged machine learning pipeline to compute and classify Water Quality Index (WQI) and its associated parameters.
+## Project Overview
 
-## Introduction
+This project implements a machine learning pipeline to predict the concentrations of major water pollutants (O₂, NO₃, NO₂, SO₄, PO₄, CL), compute the Water Quality Index (WQI), classify the water quality into categories, and evaluate the model’s prediction performance.
 
-Access to clean water is a vital global need. Predicting water quality metrics allows for early detection of contaminants and aids policymakers and researchers in proactive environmental management.
+---
 
-## Project Workflow
+## Workflow Steps
 
-- Uploaded real-world water quality datasets  
-- Performed a complete preprocessing and feature engineering pipeline  
-- Calculated WQI from raw parameters using standard limits and weightings  
-- Classified WQI into qualitative categories (WQC)  
-- Trained an XGBoost classifier with hyperparameter tuning  
-- Visualized predictions and interpreted feature impact using SHAP  
+### 1. Data Loading and Preprocessing
 
-## Features and Updates
+- Parse dates, extract year and month
+- Sort by `id` and `date`
+- Remove rows with missing pollutant values
 
-### Data Handling and Upload
+### 2. Water Quality Index (WQI)
 
-- Upload the file "Water Quality Prediction Dataset.csv"
+- Compute WQI using a weighted quality index formula
+- Classify WQI into qualitative classes:
+  - Excellent (≤25)
+  - Good (26–50)
+  - Poor (51–75)
+  - Not Suitable (>75)
 
-### Full Preprocessing Pipeline
+### 3. Feature and Target Preparation
 
-- Parsed dates and extracted `month` and `year`
-- Imputed missing values using `SimpleImputer`
-- Corrected skewed features using `np.log1p`
-- Scaled all features using `StandardScaler`
+- One-hot encode station IDs
+- Train-test split
+- Apply `StandardScaler` to input features
 
-### WQI Calculation and Classification
+### 4. Model Training
 
-- Computed Water Quality Index (WQI) using weighted parameter scores
-- Used parameter-specific standard (`S_i`) and ideal (`V_i`) limits
-- Classified WQI into five categories: Excellent, Good, Poor, Very Poor, Unsuitable
+- Train a multi-output random forest regressor (`RandomForestRegressor` inside `MultiOutputRegressor`)
 
-### Label Encoding and Data Splitting
+### 5. Regression Evaluation
 
-- Encoded WQC string labels into integers using `LabelEncoder`
-- Applied stratified train-test split to preserve class proportions
+- Print Mean Squared Error (MSE) and R² Score for each pollutant
 
-### Model Training
+### 6. WQI Classification Evaluation
 
-- Used `XGBClassifier` with objective `'multi:softprob'`
-- Tuned hyperparameters using `GridSearchCV` with cross-validation
+- Predict WQI from the predicted pollutant concentrations
+- Compare actual vs predicted WQI classes
+- Display confusion matrix and compute classification accuracy
 
-### Evaluation and Visualization
+### 7. Random Sample Evaluation
 
-- Reported `accuracy score` and `classification report`
-- Visualized class-level performance using a `confusion matrix` (Seaborn heatmap)
-- Interpreted feature impact using SHAP with beeswarm plots for individual classes
+- Randomly select `n` samples from the dataset
+- Compare actual vs predicted pollutant levels and WQI classifications
 
-## Quality Parameters Predicted
+### 8. Save Model and Preprocessors
 
-The model processes and predicts the following water quality indicators:
+- Save trained model
+- Save `StandardScaler`
+- Save ordered list of training feature columns
 
-- **NH₄** (Ammonium)  
-- **BOD₅** (BSK₅ – Biochemical Oxygen Demand)  
-- **Suspended Solids (Colloids)**  
-- **O₂** (Dissolved Oxygen)  
-- **NO₃**, **NO₂**, **SO₄**, **PO₄** (Nitrate, Nitrite, Sulfate, Phosphate)  
-- **CL** (Chloride)  
+---
 
-## Tools and Libraries Used
+## Output Files
 
-- **Python 3.12**  
-- **Pandas**, **NumPy** – Data manipulation  
-- **Scikit-learn** – Machine learning models and preprocessing  
-- **XGBoost** – Gradient boosting model  
-- **Matplotlib**, **Seaborn** – Visualization  
-- **SHAP** – Model explainability  
-- **Jupyter Notebook / Google Colab** – Execution environment
+- `multi_rf_pollutant_model.pkl`: Trained multi-output model
+- `feature_scaler.pkl`: `StandardScaler` used for input preprocessing
+- `model_features.pkl`: Ordered list of feature columns used in training
 
-## Model Performance
+---
 
-The model achieved strong classification accuracy across categories and demonstrated interpretability using SHAP. It is deployable for practical monitoring systems and scientific reporting.
+## How to Use
+
+1. Clone this repository.
+2. Place the dataset file `Water Quality Prediction Dataset.csv` in the working directory.
+3. Run the script `main.py` or open the notebook `Water_Quality_Predictor.ipynb`.
+4. The output will include:
+   - Pollutant-wise regression metrics (MSE, R²)
+   - Confusion matrix for WQI classification
+   - Accuracy of WQI prediction
+   - Random sample evaluation output
+5. Load the saved models using `joblib.load(...)` for predictions on new input data.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
