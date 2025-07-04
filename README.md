@@ -14,7 +14,7 @@ This project implements a machine learning pipeline to predict the concentration
 
 - Parse dates, extract year and month
 - Sort by `id` and `date`
-- Remove rows with missing pollutant values
+- Missing values of the rows are replaced with the mean of their respective columns
 
 ### 2. Water Quality Index (WQI)
 
